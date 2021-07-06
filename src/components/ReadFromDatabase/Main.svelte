@@ -1,5 +1,4 @@
 <!-- hello -->
-
 <script>
     let room = undefined,
         device = undefined,
@@ -11,23 +10,13 @@
 
     let array,
         fetched = false;
+    import ArrayDisplay from "./ArrayDisplay.svelte";
     import { db } from "../JS/firebase";
     $: db.collection("devices").onSnapshot((snaps) => {
         array = snaps.docs.map((item) => item.data());
         arrayDisplay = array;
         fetched = true;
     });
-
-    // signal is id!
-    const sendSignalToNodeMcu = (signal) => {
-        db.collection("nodemcu")
-            .doc("receiveFromCloud")
-            .set({
-                date: `${new Date()}`,
-                description: "receiveFromCloud",
-                signal,
-            });
-    };
 
     // filter by room
     let arrayDisplay;
@@ -62,21 +51,4 @@
 >
 <br />
 
-{#if fetched}
-    <table>
-        {#each arrayDisplay as item}
-            <tr>
-                <td>{item.room}</td>
-                <td>{item.device}</td>
-                <td>{item.action}</td>
-                <td>{item.room}</td>
-                <td><input placeholder={item.signal} disabled /></td>
-                <td
-                    ><button on:click={() => sendSignalToNodeMcu(item.signal)}
-                        >Send Signal</button
-                    ></td
-                >
-            </tr>
-        {/each}
-    </table>
-{/if}
+<ArrayDisplay fetched={fetched} arrayDisplay={arrayDisplay} />
