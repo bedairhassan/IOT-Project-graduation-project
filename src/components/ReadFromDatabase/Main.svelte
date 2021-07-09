@@ -14,6 +14,8 @@
     import { db } from "../JS/firebase";
     $: db.collection("devices").onSnapshot((snaps) => {
         array = snaps.docs.map((item) => item.data());
+        array = array.filter((item) => item.username === currentsignedin);
+
         arrayDisplay = array;
         fetched = true;
     });
